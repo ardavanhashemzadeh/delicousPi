@@ -1,0 +1,22 @@
+https://raspberrypi.stackexchange.com/questions/71615/how-to-use-bluetooth-spi-and-uart-at-the-same-time-with-an-rpi3
+
+After two days of reading and testing I found how to do it.
+
+Three lines are needed to the /boot/config.txt to make it works.
+
+#Switch Bluetooth from UART0 to UART1.
+dtoverlay=pi3-miniuart-bt
+#UART1 clock is derived from system clock, so we need to fix core clock to avoid changing baudrate on bluetooth.
+core_freq=250
+#Set UART0 clock to normal as Rpi3 normally boot at 400Mhz (now 250Mhz) UART0 clock would biased else.
+init_uart_clock=3000000
+So let sum up:
+- On-board Bluetooth works flawlessly with my PS3 BT Keyboard;
+- Screen and touchscreen still works, hopefully;
+- PN532 works like a charm using UART0 (Pin 8 & 10)
+
+Sources:
+https://www.slideshare.net/yeokm1/raspberry-pi-3-uartbluetooth-issues
+https://github.com/raspberrypi/linux/blob/rpi-4.1.y/arch/arm/boot/dts/overlays/README
+https://www.raspberrypi.org/forums/viewtopic.php?t=138223
+https://github.com/raspberrypi/firmware/issues/800
